@@ -74,8 +74,8 @@ with tab1:
     with col1:
         uploaded_file = st.file_uploader(
             "PDF 또는 Word 파일을 선택하세요",
-            type=['pdf', 'docx'],
-            help="최대 파일 크기: 200MB"
+            type=['pdf', 'docx', 'txt'],
+            help="최대 파일 크기: 300MB"
         )
         
     with col2:
