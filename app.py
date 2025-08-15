@@ -23,6 +23,8 @@ if 'uploaded_books' not in st.session_state:
     st.session_state.uploaded_books = []
 if 'generated_questions' not in st.session_state:
     st.session_state.generated_questions = []
+if 'ns_map' not in st.session_state:
+    st.session_state.ns_map = {}
 
 # CSS 스타일
 st.markdown("""
@@ -102,6 +104,7 @@ with tab1:
                 if response.status_code == 200:
                     st.success(f"✅ '{book_title_kr}' 업로드 완료!")
                     st.session_state.uploaded_books.append(book_title_kr)
+                    st.session_state.ns_map[book_title_kr] = book_title_en  # 🔥 이 줄 추가
                     st.balloons()
                 else:
                     st.error(f"❌ 업로드 실패: {response.text}")
@@ -152,10 +155,13 @@ with tab2:
             try:
                 payload = {
                     "bookTitleKr": selected_book,
-                    "bookTitleEn": selected_book.replace(" ", "_").lower(),
+                    "bookTitleEn": st.session_state.ns_map.get(
+                        selected_book, 
+                        selected_book.replace(" ", "_").lower()
+                    ),
                     "category": category if category != "전체 (50문항)" else "all",
                     "questionCount": question_count,
-                    "difficultyRange": difficulty_range  # 이 줄 추가
+                    "difficultyRange": difficulty_range
                 }
 
                 resp = requests.post(
